@@ -4,7 +4,9 @@ import br.com.growdev.growdevers.database.DataBase;
 import br.com.growdev.growdevers.dtos.*;
 import br.com.growdev.growdevers.enums.EStatus;
 import br.com.growdev.growdevers.models.Growdever;
+import br.com.growdev.growdevers.repositories.GrowdeverRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -14,12 +16,16 @@ import java.util.UUID;
 @RequestMapping("/growdevers")
 public class GrowdeverController {
 
+    @Autowired // injeção de dependencia
+    private GrowdeverRepository growdeverRepository;
 
     @GetMapping
     public ResponseEntity<List<GrowdeverList>> listGrowdevers(@RequestParam(required = false) String name, @RequestParam(required = false) EStatus status) {
         //var data = DataBase.getGrowdevers().stream().map((growdever) -> new GrowdeverList(growdever)).toList();
 
-        var data = DataBase.getGrowdevers().stream().filter(growdever -> {
+        var dataDB = growdeverRepository.findAll();
+
+        var data = dataDB.stream().filter(growdever -> {
             // nome e status ao mesmo tempo
             if(name != null && status != null) {
                 return growdever.getName().toLowerCase().contains(name.toLowerCase()) && growdever.getStatus().equals(status);
@@ -57,13 +63,13 @@ public class GrowdeverController {
 
     @PostMapping
     public ResponseEntity createGrowdever(@RequestBody @Valid CreateGrowdeverDTO data) {
-        if(DataBase.growdeverExistByCPF(data.cpf())) {
-            return ResponseEntity.badRequest().body(new ErrorData("CPF já cadastrado."));
-        }
-
-        if(DataBase.growdeverExistByEmail(data.email())) {
-            return ResponseEntity.badRequest().body(new ErrorData("E-mail já cadastrado."));
-        }
+//        if(DataBase.growdeverExistByCPF(data.cpf())) {
+//            return ResponseEntity.badRequest().body(new ErrorData("CPF já cadastrado."));
+//        }
+//
+//        if(DataBase.growdeverExistByEmail(data.email())) {
+//            return ResponseEntity.badRequest().body(new ErrorData("E-mail já cadastrado."));
+//        }
 
         var growdever = new Growdever(
                 data.name(),
@@ -72,7 +78,8 @@ public class GrowdeverController {
                 data.phone(),
                 data.status()
         );
-        DataBase.addGrowdever(growdever);
+
+        growdeverRepository.save(growdever);
 
         return ResponseEntity.noContent().build();
     }
@@ -105,9 +112,6 @@ public class GrowdeverController {
         DataBase.updateGrowdever(growdever);
 
         return ResponseEntity.noContent().build();
-
     }
-
-
 
 }

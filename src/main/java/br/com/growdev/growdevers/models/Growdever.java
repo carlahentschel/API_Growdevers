@@ -1,22 +1,27 @@
 package br.com.growdev.growdevers.models;
 
-
 import br.com.growdev.growdevers.dtos.UpdateGrowdever;
 import br.com.growdev.growdevers.enums.EStatus;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
+@Entity
+@Table(name = "growdevers", schema = "growdevers")
 public class Growdever {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
     private  String email;
     private String cpf;
+    @Column(name="phone")
     private String numberPhone;
+    @Enumerated(EnumType.STRING)
     private EStatus status;
     private ArrayList<GrowdeverSkill> skills;
 
@@ -27,7 +32,6 @@ public class Growdever {
         this.numberPhone = numberPhone;
         this.status = status;
         skills = new ArrayList<>();
-        id = UUID.randomUUID();
     }
 
     public void updateInfo(UpdateGrowdever data) {

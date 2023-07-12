@@ -22,7 +22,7 @@ public class GrowdeversApplication {
 						.allowedOrigins("http//localhost:3000")
 						.allowedMethods("POST", "GET", "PUT", "DELETE");
 			}
-		}
+		};
 	}
 }
 
