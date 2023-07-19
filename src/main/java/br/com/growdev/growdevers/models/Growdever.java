@@ -23,6 +23,7 @@ public class Growdever {
     private String numberPhone;
     @Enumerated(EnumType.STRING)
     private EStatus status;
+    @OneToMany
     private ArrayList<GrowdeverSkill> skills;
 
     public Growdever(String name, String email, String cpf, String numberPhone, EStatus status) {
@@ -31,7 +32,7 @@ public class Growdever {
         this.cpf = cpf;
         this.numberPhone = numberPhone;
         this.status = status;
-        skills = new ArrayList<>();
+        //skills = new ArrayList<>();
     }
 
     public void updateInfo(UpdateGrowdever data) {
